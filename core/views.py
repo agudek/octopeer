@@ -193,6 +193,22 @@ class SemanticEventList(generics.ListCreateAPIView):
     queryset = SemanticEvent.objects.all()
     serializer_class = SemanticEventSerializer
 
+    def get_queryset(self):
+        event_type = self.request.query_params.get('event_type', None)
+        element_type = self.request.query_params.get('element_type', None)
+        date_from = self.request.query_params.get('date_from', None)
+        date_to = self.request.query_params.get('date_to', None)
+        semantic_events = self.queryset
+        if event_type is not None:
+            semantic_events = semantic_events.filter(event_type=event_type)
+        if element_type is not None:
+            semantic_events = semantic_events.filter(element_type=element_type)
+        if date_from is not None:
+            semantic_events = semantic_events.filter(created_at__gte=date_from)
+        if date_to is not None:
+            semantic_events = semantic_events.filter(created_at__lte=date_to)
+        return semantic_events
+
 class SemanticEventUserList(EventUserFilter):
     queryset = SemanticEvent.objects.all()
     serializer_class = SemanticEventSerializer
