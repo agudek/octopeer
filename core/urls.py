@@ -50,6 +50,7 @@ urlpatterns = [
     url(r'^semantic-events/$', views.SemanticEventList.as_view(), name='semantic-event-list'),
     url(r'^semantic-events/(?P<pk>[0-9]+)/$', views.SemanticEventDetail.as_view(), name='semantic-event-detail'),
     url(r'^semantic-events/(?P<username>.+)/(?P<owner>.+)/(?P<name>.+)/(?P<pull_request_number>[0-9]+)/$', views.SemanticEventSessionList.as_view(), name='semantic-event-session-list'),
+    url(r'^semantic-events/(?P<owner>.+)/(?P<name>.+)/(?P<pull_request_number>[0-9]+)/$', views.SemanticEventAllSessionList.as_view(), name='semantic-event-all-session-list'),
     url(r'^semantic-events/(?P<username>.+)/$', views.SemanticEventUserList.as_view(), name='semantic-event-user-list'),
 
     url(r'^sessions/$', views.SessionList.as_view(), name='session-list'),

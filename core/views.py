@@ -240,6 +240,31 @@ class SemanticEventSessionList(EventUserFilter):
         semantic_events = self.queryset.filter(session=session)
         return semantic_events
 
+class SemanticEventAllSessionList(EventUserFilter):
+    queryset = SemanticEvent.objects.all()
+    serializer_class = SemanticEventSerializer
+
+    def get_queryset(self):
+        event_type = self.request.query_params.get('event_type', None)
+        element_type = self.request.query_params.get('element_type', None)
+        repository = get_object_or_404(
+            Repository.objects.all(),
+            owner=self.kwargs['owner'],
+            name=self.kwargs['name']
+        )
+        pull_request = get_object_or_404(
+            PullRequest.objects.all(),
+            repository=repository,
+            pull_request_number=self.kwargs['pull_request_number']
+        )
+        session = Session.objects.all().filter(pull_request = pull_request)
+        semantic_events = self.queryset.filter(session__in = session)
+        if event_type is not None:
+            semantic_events = semantic_events.filter(event_type=event_type)
+        if element_type is not None:
+            semantic_events = semantic_events.filter(element_type=element_type)
+        return semantic_events
+
 class SemanticEventDetail(generics.RetrieveAPIView):
     queryset = SemanticEvent.objects.all()
     serializer_class = SemanticEventSerializer
